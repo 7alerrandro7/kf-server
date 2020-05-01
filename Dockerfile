@@ -10,7 +10,7 @@ ENV KF_LOGIN=admin \
 	KF_PASS=admin \
 	KF_GAMELEN=2 \
 	KF_DIFFICULTY=7.0 \
-	KF_CONFIG=/kf/server/System/killingfloor-server.ini \
+	KF_CONFIG=/kf/server/System/KillingFloor.ini \
 	TERM=xterm
 
 WORKDIR /
@@ -21,13 +21,15 @@ RUN apt-get update && \
 	mkdir -p /kf/server
 
 WORKDIR /kf
-COPY setup.sh kf.ini /kf/
+COPY setup.sh config.ini /kf/
 RUN curl -O https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz && \
 	tar -xf steamcmd_linux.tar.gz && \
 	rm -f steamcmd_linux.tar.gz && \
 	chmod +x setup.sh steamcmd.sh
 
 RUN ./steamcmd.sh +login ${STEAM_LOGIN} ${STEAM_PASS} ${STEAM_GUARD} +force_install_dir /kf/server +app_update 215360 validate +quit
+
+RUN cp config.ini /kf/server/System
 
 WORKDIR /kf/server/System
 
